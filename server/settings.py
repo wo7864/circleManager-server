@@ -25,7 +25,7 @@ ALGORITHM = 'HS256'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '54.180.89.212', '192.168.25.6']
+ALLOWED_HOSTS = ['localhost', '54.180.89.212', '192.168.25.49']
 
 
 # Application definition
