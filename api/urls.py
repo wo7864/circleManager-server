@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
-from .views import UserView,  CircleView, CircleMemberView
+from .views import UserView,  CircleView, CircleMemberView, TextPostView
 #from rest_framework_jwt.views import obtain_jwt_token, verify_jwt_token
 
 user_auth = UserView.as_view({
@@ -48,6 +48,18 @@ circle_member_list = CircleMemberView.as_view({
 circle_member_update = CircleMemberView.as_view({
     'delete': 'destory'
 })
+
+text_post_list = TextPostView.as_view({
+    'post': 'create',
+    'get': 'list'
+})
+
+text_post_detail = TextPostView.as_view({
+    'get': 'retrieve',
+    'put': 'update',
+    'delete': 'destroy'
+})
+
 urlpatterns = format_suffix_patterns([
     path('auth/', include('rest_framework.urls', namespace='rest_framework')),
     #path('api-token-auth/', obtain_jwt_token),
@@ -65,6 +77,8 @@ urlpatterns = format_suffix_patterns([
     path('circles/member/<str:oid>/', circle_member_list, name='circle_member_list'),
     path('circles/member/<str:circle_oid>/<str:member_oid>', circle_member_update, name='circle_member_list'),
 
+    path('posts/text/', text_post_list, name='text_post_list'),
+    path('posts/text/<str:oid>/', text_post_detail, name='text_post_detail'),
 
 
 ])

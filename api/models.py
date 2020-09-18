@@ -12,7 +12,7 @@ class User(models.Model):
     
 
     def __str__(self):
-        return self.name
+        return self._id
 
 
 class Circle(models.Model):
@@ -22,4 +22,15 @@ class Circle(models.Model):
     member = models.ArrayField(model_container=User)
 
     def __str__(self):
-        return self.name
+        return self._id
+
+class TextPost(models.Model):
+    _id = models.ObjectIdField()
+    author = models.CharField(max_length=50)
+    title = models.CharField(max_length=100)
+    contents = models.CharField(max_length=10000)
+    like = models.IntegerField(default=0)
+    create_date = models.DateField(auto_now=True)
+
+    def __str__(self):
+        return self._id

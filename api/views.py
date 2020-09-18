@@ -1,5 +1,5 @@
-from .serializers import UserSerializer, CircleSerializer
-from .models import User, Circle
+from .serializers import UserSerializer, CircleSerializer, TextPostSerializer
+from .models import User, Circle, TextPost
 from django.http import Http404
 
 from rest_framework import status
@@ -35,7 +35,6 @@ class UserView(viewsets.ModelViewSet):
 
     def list(self, request):
         queryset = User.objects.all()
-        print(request.META)
         serializer = UserSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -44,7 +43,9 @@ class UserView(viewsets.ModelViewSet):
         json = jwt.decode(auth, SECRET_KEY, ALGORITHM)
         user = User.objects.get(user_id=json['user_id'])
         serializer = UserSerializer(user)
-        return Response(serializer.data)
+        data = serializer.data.copy()
+        data['_id'] = str(user._id)
+        return Response(data)
 
 
     def create(self, request):
@@ -192,4 +193,47 @@ class CircleMemberView(viewsets.ModelViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+class TextPostView(viewsets.ModelViewSet):
+    queryset = TextPost.objects.all()
+    serializer_class = TextPostSerializer
+    permission_classes = (permissions.AllowAny,)
+
+    def get_object(self, oid):
+        try:
+            oid = ObjectId(oid)
+            return TextPost.objects.get(_id=oid)
+        except:
+            raise Http404
+
+    def list(self, request):
+        queryset = TextPost.objects.all()
+        serializer = TextPostSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request):
+        data = request.data
+        post = TextPost(author=data['author'],
+                    title=data['title'],
+                    contents=data['contents'])
+        post.save()
+        return Response(request.data)
+
+    def retrieve(self, request, oid):
+        post = self.get_object(oid)
+        serializer = TextPostSerializer(post)
+        return Response(serializer.data)
+
+    def update(self, request, oid):
+        post = self.get_object(oid)
+        serializer = TextPostSerializer(post, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, oid):
+        post = self.get_object(oid)
+        post.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 

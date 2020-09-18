@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Circle
+from .models import User, Circle, TextPost
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -11,3 +11,8 @@ class CircleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Circle
         fields = ('name', 'leader', 'member')
+
+class TextPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TextPost
+        fields = ('author', 'title', 'contents')
